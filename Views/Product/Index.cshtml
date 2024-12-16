@@ -1,0 +1,201 @@
+@* @model IEnumerable<AdventureCore.Models.ProductBasic>
+@{
+    ViewData["Title"] = "Lista de Usuarios";
+}
+
+@section VendorStyles {
+    <link rel="stylesheet" href="~/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="//cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css" />
+
+}
+
+@section PageStyles {
+    <style>
+        table.dataTable thead th {
+            text-align: center;
+        }
+
+    </style>
+}
+
+@section VendorScripts {
+    <script src="~/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="//cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+}
+
+@section PageScripts {
+   <script>
+    $(document).ready(function () {
+        // Inicializar DataTables en la tabla con clase 'datatable'
+        $('#TablaProductoBasico').DataTable({
+            responsive: true,
+            autoWidth: false,
+            language: {
+                "decimal": "",
+                "emptyTable": "No hay datos disponibles en la tabla",
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+                "infoEmpty": "Mostrando 0 a 0 de 0 entradas",
+                "infoFiltered": "(filtrado de _MAX_ entradas totales)",
+                "infoPostFix": "",
+                "thousands": ".",
+                "lengthMenu": "Mostrar _MENU_ entradas",
+                "loadingRecords": "Cargando...",
+                "processing": "",
+                "search": "Buscar:",
+                "zeroRecords": "No se encontraron coincidencias",
+                "paginate": {
+                    "first": "Primero",
+                    "last": "Último",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                },
+                "aria": {
+                    "orderable": "Ordenar por esta columna",
+                    "orderableReverse": "Orden inverso en esta columna"
+                }
+            },
+            ajax: {
+                url: '/Product/GetLisSimple',
+                type: 'GET',
+                dataSrc: ''
+            },
+            columns: [
+                {
+                    data: 'productName',
+                    render: function(data) {
+                        return data ? data : '<span class="badge bg-info text-dark">N/A</span>';
+                    }
+                },
+                {
+                    data: 'productNumber',
+                    render: function(data) {
+                        return data ? data : '<span class="badge bg-info text-dark">N/A</span>';
+                    }
+                },
+                {
+                    data: 'color',
+                    render: function(data) {
+                        return data ? data : '<span class="badge bg-info text-dark">N/A</span>';
+                    }
+                },
+                {
+                    data: 'listPrince',
+                    render: function(data) {
+                        return data ? data : '<span class="badge bg-info text-dark">N/A</span>';
+                    }
+                },
+                {
+                    data: 'standartCost',
+                    render: function(data) {
+                        return data ? data : '<span class="badge bg-info text-dark">N/A</span>';
+                    }
+                },
+                {
+                    data: 'size',
+                    render: function(data) {
+                        return data ? data : '<span class="badge bg-info text-dark">N/A</span>';
+                    }
+                },
+                {
+                    data: 'modifiedDate',
+                    render: function(data) {
+                        const date = new Date(data); // Convierte la fecha a objeto Date
+                        return date.toLocaleDateString(); // Muestra solo la fecha
+                    }
+                },
+                {
+                    data: 'idProductID',
+                    render: function(data) {
+                        return `
+                            <a href="#" class="btn rounded-pill btn-primary" onclick="edit(${data})">
+                                <i class="ri-edit-2-line"></i>
+                            </a>
+                            <a href="#" class="btn rounded-pill btn-danger" onclick="delete(${data})">
+                                <i class="ri-delete-bin-line"></i>
+                            </a>
+                        `;
+                    }
+                }
+            ]
+        });
+    });
+
+
+    //funciones 
+     function edit(id){
+       debugger
+         let idEditar = id;
+         if(!idEditar){
+             alert("Id invalido");
+             return;
+         }
+         $.ajax({
+            url: '@Url.Action("GetProduct", "Product")', //ruta
+            type : "Get", //el tipo de metodo
+            contentType: "application/json", //tipo de contenido enviado
+             data: { id:idEditar },  //datos que enviaremos al server
+            // dataType: "" ,//la respuesta que espero recibir
+             success: function (response) {
+                 $("#modalBody").html(response);
+
+                // $("#productoModal").show();
+                    $("#productoModal").modal("show");
+
+                },
+             error: function (xhr, status, error) {
+                        console.error("Error AJAX: ", xhr.responseText);
+                        console.error("Estado: ", status);
+                        console.error("Detalles del error: ", error);
+                        alert("Error al cargar los datos del producto. Verifica la consola.");
+                }
+         });
+     }
+
+
+</script>
+
+}
+
+
+<div class="card">
+    <h5 class="card-header">Tabla de productos</h5>
+    <div class="card-body">
+        <div class="table-responsive text-nowrap">
+            <table id="TablaProductoBasico" class="datatable table table-bordered table-striped table-hover text-center">
+                <thead class="text-center">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>N° de Producto</th>
+                        <th>Color </th>
+                        <th>Precio</th>
+                        <th>Costo Estandar</th>
+                        <th>Tamaño</th>
+                        <th>Ult. Modificacion</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                 
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="productoModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Formulario de Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Aquí se carga la vista parcial -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+ *@

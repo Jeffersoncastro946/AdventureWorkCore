@@ -1,0 +1,71 @@
+@{
+  TempData.Keep();
+  string? currentPage = ViewContext.HttpContext.Request.Path;
+}
+
+<!-- Menu -->
+@* ! Do this simple *@
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+
+  @* ! Hide app brand if navbar-full *@
+  <div class='app-brand demo @((@ViewData["navbarFull"] != null && Convert.ToBoolean(@ViewData["navbarFull"])) ? "d-xl-none" : "")'>
+    <a asp-controller="Dashboards" asp-action="Index" class="app-brand-link">
+      <span class="app-brand-logo demo me-1">  @await Html.PartialAsync("../_Partials/_Macros")</span>
+      <span class="app-brand-text demo menu-text fw-semibold ms-2">@TempData.Peek("appName")</span>
+    </a>
+
+    <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
+      <i class="menu-toggle-icon d-xl-block align-middle"></i>
+    </a>
+  </div>
+
+  <div class="menu-inner-shadow"></div>
+
+  @* ! Full version menu-items *@
+  <ul class="menu-inner py-1">
+    <!-- Primer item -->
+    <li class='menu-item@(currentPage.EndsWith("/") || currentPage.StartsWith("/Index") ? " active open" : "")'>
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="tf-icons ri-list-check"></i>
+        <div>Querys Productos</div>
+        @* <div class="badge bg-danger rounded-pill ms-auto">4</div> *@
+      </a>
+      <ul class="menu-sub">
+                <!-- Ejercicios Básicos -->
+                <li class='menu-item@(currentPage == "/Product/indexs" ? " active open" : "")'>
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <div> Básicos</div>
+                        <div class="badge bg-label-primary fs-tiny rounded-pill ms-auto">5</div>
+                    </a>
+                    <!-- Subcategoría de Ejercicios Básicos -->
+                    <ul class="menu-sub">
+                        <li class='menu-item@(currentPage == "/Product/Basic1" ? " active" : "")'>
+                          <a asp-controller="product" asp-action="Index" class="menu-link">
+                                <div>Ejercicio Básico 1</div>
+                            </a>
+                         
+                        </li>
+                        <li class='menu-item@(currentPage == "/Product/Basic2" ? " active" : "")'>
+                            <a href="/Product/Basic2" class="menu-link">
+                                <div>Ejercicio Básico 2</div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- Ejercicios Intermedios -->
+        <li class='menu-item@(currentPage == "/" ? " active" : "")'>
+            <a href="#" class="menu-link">
+            <div>Ejercicios Intermedio</div>
+          </a>
+        </li>  
+      </ul>
+    </li> 
+     <li class="menu-header mt-7">
+      <span class="menu-header-text">Apps &amp; Pages</span>
+    </li>
+  
+  </ul>
+
+</aside>
+<!-- / Menu -->
+
